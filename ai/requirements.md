@@ -30,6 +30,7 @@ Agent Prediction Cloud (APC) is a Multi-Agent System (MAS) that simulates a pred
     *   **Acceptance Criteria:**
         *   WHEN an agent needs to make a decision, THEN the system SHALL send a prompt to the LLM API.
         *   The system SHALL handle API rate limits and errors gracefully.
+        *   The system SHALL cache LLM responses to avoid redundant API calls and reduce latency.
 
 ### 3. Market Mechanism
 5.  **Scenario/Question Generation (Market Maker)**

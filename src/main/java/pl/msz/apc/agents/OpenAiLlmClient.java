@@ -14,25 +14,33 @@ import org.springframework.stereotype.Service;
 public class OpenAiLlmClient implements LlmClient {
 
     private final ChatClient.Builder chatClientBuilder;
+    private final LlmCacheService llmCacheService;
 
     @Override
     public String chat(String message, Persona persona, ModelType modelType) {
-        log.info("Sending message to LLM as {} using model {}: {}", persona.getRoleName(), modelType, message);
-        
-        ChatClient chatClient = chatClientBuilder
-                .defaultSystem(persona.getSystemPrompt())
-                .build();
+        String fullPrompt = "System: " + persona.getSystemPrompt() + "\nUser: " + message;
+        String modelName = modelType.getModelName();
 
-        String response = chatClient.prompt()
-                .user(message)
-                .options(OpenAiChatOptions.builder()
-                        .withModel(modelType.getModelName())
-                        .build())
-                .call()
-                .content();
+        return llmCacheService.getCachedResponse(fullPrompt, modelName)
+                .orElseGet(() -> {
+                    log.info("Sending message to LLM as {} using model {}: {}", persona.getRoleName(), modelType, message);
 
-        log.info("Received response from LLM: {}", response);
-        return response;
+                    ChatClient chatClient = chatClientBuilder
+                            .defaultSystem(persona.getSystemPrompt())
+                            .build();
+
+                    String response = chatClient.prompt()
+                            .user(message)
+                            .options(OpenAiChatOptions.builder()
+                                    .withModel(modelName)
+                                    .build())
+                            .call()
+                            .content();
+
+                    log.info("Received response from LLM: {}", response);
+                    llmCacheService.cacheResponse(fullPrompt, modelName, response);
+                    return response;
+                });
     }
 
     // Default method in interface

@@ -1,3 +1,6 @@
 databaseChangeLog:
   - include:
       file: database/changelog/01-market-init.yaml
+  - include:
+      file: database/changelog/02-llm-cache-init.yaml
+

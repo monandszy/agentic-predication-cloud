@@ -38,3 +38,9 @@
 *Goal: Polish and verify.*
 - [x] **P6.1**: Add integration tests for the full flow. (Req: 10, 11)
 - [ ] **P6.2**: Tune prompts for better persona distinctiveness. (Req: 3)
+
+## Phase 7: Optimization & Caching (High Priority)
+*Goal: Reduce costs and latency.*
+- [ ] **P7.1**: Design and implement `LlmCache` entity and repository. (Req: 4)
+- [ ] **P7.2**: Implement `LlmCacheService` to handle storage and retrieval. (Req: 4)
+- [ ] **P7.3**: Integrate caching into `LlmClient` (Decorator pattern). (Req: 4)

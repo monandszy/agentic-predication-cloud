@@ -6,11 +6,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.msz.apc.agents.Persona;
 import pl.msz.apc.reporting.ConsensusCalculator;
+import pl.msz.apc.reporting.MarkdownReportExporter;
 import pl.msz.apc.reporting.NarrativeGenerator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -26,6 +31,7 @@ public class MarketController {
     private final ConsensusCalculator consensusCalculator;
     private final NarrativeGenerator narrativeGenerator;
     private final BetRepository betRepository;
+    private final MarkdownReportExporter reportExporter;
 
     @PostMapping
     @Operation(summary = "Create a new market", description = "Generates questions based on a topic but does not run the simulation.")
@@ -63,5 +69,41 @@ public class MarketController {
 
         log.info("Simulation complete. Consensus: {}", consensus);
         return report;
+    }
+
+    @PostMapping("/simulate/file")
+    @Operation(summary = "Run full simulation and download report", description = "Runs the simulation and returns a Markdown file.")
+    public ResponseEntity<byte[]> runSimulationAndDownload(
+            @Parameter(description = "The topic to predict", example = "Will SpaceX reach Mars by 2030?")
+            @RequestParam(defaultValue = "What is the future of AI?") String topic) {
+        
+        // Reuse logic (ideally refactor into a Service method, but keeping it simple here)
+        Market market = marketMakerService.createMarket(topic);
+        if (market.getQuestions().isEmpty()) {
+            return ResponseEntity.badRequest().body("Failed to generate questions.".getBytes());
+        }
+        Question question = market.getQuestions().get(0);
+
+        List<Persona> agents = List.of(Persona.ECONOMIST, Persona.SKEPTIC, Persona.STRATEGIST, Persona.FUTURIST);
+        bettingService.collectBets(question, agents);
+
+        List<Bet> round1Bets = betRepository.findByQuestionAndRound(question, 1);
+        debateService.runDebateRound(question, round1Bets);
+
+        List<Bet> round2Bets = betRepository.findByQuestionAndRound(question, 2);
+        double consensus = consensusCalculator.calculateConsensus(round2Bets);
+        String narrative = narrativeGenerator.generateReport(question, round2Bets, consensus);
+
+        // Collect all bets for the report
+        List<Bet> allBets = new ArrayList<>();
+        allBets.addAll(round1Bets);
+        allBets.addAll(round2Bets);
+
+        byte[] fileContent = reportExporter.export(market, allBets, narrative);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=report.md")
+                .contentType(MediaType.parseMediaType(reportExporter.getContentType()))
+                .body(fileContent);
     }
 }

@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: 02-llm-cache-init
+      author: apc-dev
+      changes:
+        - createTable:
+            tableName: llm_cache
+            columns:
+              - column:
+                  name: prompt_hash
+                  type: VARCHAR(64)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: prompt_text
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: response_text
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: model_name
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: NOW()

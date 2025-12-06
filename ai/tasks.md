@@ -41,3 +41,10 @@
 ## Phase 6: Documentation & Polish
 - [x] **T6.1**: Add Swagger/OpenAPI documentation (`springdoc-openapi`).
 
+## Phase 7: Optimization & Caching
+- [ ] **T7.1**: Create `LlmCache` JPA Entity (`promptHash`, `promptText`, `responseText`, `modelName`, `createdAt`). (Plan: P7.1)
+- [ ] **T7.2**: Create `LlmCacheRepository` (Spring Data JPA). (Plan: P7.1)
+- [ ] **T7.3**: Implement `LlmCacheService` with `get(hash)` and `put(hash, response)` methods. (Plan: P7.2)
+- [ ] **T7.4**: Modify `LlmClient` (or create `CachedLlmClient` proxy) to check cache before calling AI provider. (Plan: P7.3)
+- [ ] **T7.5**: Add SHA-256 hashing utility for prompts. (Plan: P7.3)
+

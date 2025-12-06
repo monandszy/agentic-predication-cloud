@@ -87,7 +87,38 @@ Generates the final artifact required by MSZ.
     *   Formatting the "Chain of Thought" text.
     *   Producing the JSON/Markdown output.
 
+### 3.5. Caching Layer
+To optimize performance and reduce costs, an application-level cache is implemented for LLM interactions.
+
+*   **Responsibilities:**
+    *   Intercepting calls to the `LlmClient`.
+    *   Hashing the input prompt and model parameters to generate a unique key.
+    *   Storing and retrieving responses from the database.
+*   **Key Components:**
+    *   `LlmCacheService`: Manages the persistence of cached responses.
+    *   `CachedLlmClient`: A decorator or proxy around the standard `LlmClient` that checks the cache first.
+
 ---
+
+## 4. Database Schema (PostgreSQL)
+
+```sql
+-- Knowledge Base
+CREATE TABLE documents (
+    id UUID PRIMARY KEY,
+    content TEXT,
+    embedding VECTOR(1536) -- Dimension depends on the model (e.g., 1536 for OpenAI, 768 for Gemini)
+);
+
+-- LLM Cache
+CREATE TABLE llm_cache (
+    prompt_hash VARCHAR(64) PRIMARY KEY, -- SHA-256 hash of the prompt + model + params
+    prompt_text TEXT NOT NULL,           -- Original prompt for debugging
+    response_text TEXT NOT NULL,         -- The LLM's response
+    model_name VARCHAR(50) NOT NULL,     -- e.g., "gpt-4o"
+    created_at TIMESTAMP DEFAULT NOW()
+);
+```---
 
 ## 4. Database Schema (PostgreSQL)
 
