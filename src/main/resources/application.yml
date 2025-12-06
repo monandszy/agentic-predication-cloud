@@ -1,0 +1,42 @@
+server:
+  port: 8000
+  servlet:
+    context-path: /
+  error:
+    path: /error
+spring:
+  application:
+    name: app
+  profiles.active: prod
+  main:
+    banner-mode: off
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+    # database created based on spring.application.name see DatabaseInitializer
+    url: jdbc:postgresql://postgres:5432/postgres
+    hikari:
+      schema: app
+      idle-timeout: 10000
+      connection-timeout: 20000
+      minimum-idle: 10
+      maximum-pool-size: 20
+      pool-name: HikariCP
+  liquibase:
+    enabled: true
+    change-log: classpath:database/changelog/changelog-root.yaml
+    driver-class-name: org.postgresql.Driver
+    default-schema: app
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    properties.hibernate.jdbc.batch_size: 5
+    properties.hibernate.order_inserts: true
+    properties.hibernate.order_updates: true
+
+logging:
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %logger{36} - %msg%n"

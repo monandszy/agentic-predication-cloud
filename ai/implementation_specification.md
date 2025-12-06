@@ -27,10 +27,7 @@ Zbiór niezależnych instancji LLM (w prototypie: wywołania API z różnymi Sys
 *   Generuje **Chain of Thought** poprzez syntezę "Betting Rationales" od poszczególnych agentów.
 *   Buduje ostateczny tekst scenariuszy (Pozytywny/Negatywny).
 
-### 3. Stack Technologiczny (Wersja Prototypowa)
-
-
-### 4. Realizacja Wymagań MSZ przez APC
+### 3. Realizacja Wymagań MSZ przez APC
 
 | Wymóg MSZ | Realizacja w Agent Prediction Cloud |
 | :--- | :--- |
@@ -39,7 +36,7 @@ Zbiór niezależnych instancji LLM (w prototypie: wywołania API z różnymi Sys
 | **Wieloczynnikowość** | Konflikt interesów między Agentem Ekonomicznym a Militarnym naturalnie symuluje złożoność geopolityki (dylemat "masło czy armaty"). |
 | **Skalowalność** | Dodanie nowego kraju do analizy to po prostu dodanie nowego Agenta (np. "German Policy Agent") do puli traderów. |
 
-### 5. Ryzyka i Mitygacja (Dla Prototypu)
+### 4. Ryzyka i Mitygacja (Dla Prototypu)
 
 *   **Ryzyko:** Agenci będą "halucynować" te same błędy (Groupthink).
 *   **Mitygacja:** Wymuszenie w promptach "Adwersarza" (jeden agent musi zawsze szukać kontrargumentów).

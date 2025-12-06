@@ -4,18 +4,18 @@ Transform the provided high-level requirements into a complete set of project pl
 
 ## Instructions:
 
-You must produce **four files** inside the `.ai/` directories:
+You must produce **four files** inside the `ai/` directories:
 
-- `.ai/requirements.md`
-- `.ai/plan.md`
-- `.ai/tasks.md`
-- `.ai/guidelines.md`
+- `ai/requirements.md`
+- `ai/plan.md`
+- `ai/tasks.md`
+- `ai/guidelines.md`
 
 Follow the methodology below step by step:
   
 ---  
 
-### Step 1: Create `.ai/requirements.md`
+### Step 1: Create `ai/requirements.md`
 
 - Title: **Requirements Document**
 - Introduction: Summarize the application purpose and key functionality.
@@ -40,9 +40,9 @@ Follow the methodology below step by step:
 
 ---  
 
-### Step 2: Create `.ai/plan.md`
+### Step 2: Create `ai/plan.md`
 
-- Analyze `.ai/requirements.md`.
+- Analyze `ai/requirements.md`.
 - Develop a **detailed implementation plan**:
     - Link each plan item explicitly to the corresponding requirements.
     - Assign priorities (e.g., High, Medium, Low).
@@ -51,22 +51,22 @@ Follow the methodology below step by step:
 
 ---  
 
-### Step 3: Create `.ai/tasks.md`
+### Step 3: Create `ai/tasks.md`
 
-- Based on the implementation plan in `.ai/plan.md`, produce a **detailed enumerated technical task list**:
+- Based on the implementation plan in `ai/plan.md`, produce a **detailed enumerated technical task list**:
 
     - Each task must have a placeholder `[ ]` to mark completion.
     - Link each task both to:
-        - the development plan item in `.ai/plan.md`
-            - the related requirement(s) in `.ai/requirements.md`
+        - the development plan item in `ai/plan.md`
+            - the related requirement(s) in `ai/requirements.md`
 - Group tasks into **development phases**.
 - Organize phases logically (e.g., Setup → Core Features → Advanced Features → Testing & QA).
 
 ---  
 
-### Step 4: Update `.ai/guidelines.md`
+### Step 4: Update `ai/guidelines.md`
 
-- Add **concise technical instructions** on how to work with the `.ai/tasks.md` checklist.
+- Add **concise technical instructions** on how to work with the `ai/tasks.md` checklist.
 - Instructions should include:
     - Mark tasks as `[x]` when completed.
     - Keep phases intact but add new tasks if needed.
@@ -75,11 +75,12 @@ Follow the methodology below step by step:
 
 ---  
 
-## Initali project Specification: `.ai/implementation_specification.md`
+## Inital project Specification: `ai/implementation_specification.md`
+## Inital technical Specification: `ai/technical_specification.md`
 
 ## Output:
 
-1. `.ai/requirements.md` – structured requirements document
-2. `.ai/plan.md` – implementation plan with priorities and links
-3. `.ai/tasks.md` – detailed enumerated task list grouped into phases
-4. `.ai/guidelines.md` – updated concise instructions for working with the task list
+1. `ai/requirements.md` – structured requirements document
+2. `ai/plan.md` – implementation plan with priorities and links
+3. `ai/tasks.md` – detailed enumerated task list grouped into phases
+4. `ai/guidelines.md` – updated concise instructions for working with the task list

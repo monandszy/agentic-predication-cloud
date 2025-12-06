@@ -13,11 +13,11 @@
 *   **Brak transparentności:** Dostępne narzędzia nie tłumaczą powiązań między danymi wejściowymi, co obniża wiarygodność analiz dla decydentów.
 
 ### 3. Oczekiwany rezultat
-**Rozwiązanie:** Stworzenie narzędzia do analizy danych tekstowych i liczbowych, oferującego wieloaspektowe scenariusze zdarzeń przyszłych o realistycznym poziomie probabilizmu.
+*   **Rozwiązanie:** Stworzenie narzędzia do analizy danych tekstowych i liczbowych, oferującego wieloaspektowe scenariusze zdarzeń przyszłych o realistycznym poziomie probabilizmu.
 
-**Forma narzędzia:** Aplikacja / agent, który analizuje dane wejściowe (opisane w `Atlantis_Scenarios.md`) i wyciąga wnioski wg kryteriów ("interes państwa Atlantis") i wag.
+*   **Forma narzędzia:** Aplikacja / agent, który analizuje dane wejściowe (opisane w `Atlantis_Scenarios.md`) i wyciąga wnioski wg kryteriów ("interes państwa Atlantis") i wag.
 
-**Produkt końcowy:**
+*   **Produkt końcowy:**
 Scenariusze (predykcje) i rekomendacje dla rządu Atlantis w dwóch perspektywach (12 i 36 miesięcy) i dwóch wariantach (negatywny/pozytywny). Łącznie 4 scenariusze.
 
 ### 4. Cel Wyzwania
