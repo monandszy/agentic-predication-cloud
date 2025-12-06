@@ -19,7 +19,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 @Service
-class FileLoader {
+public class FileLoader {
 
     public List<Document> loadDocuments(String directoryPath) {
         List<Document> documents = new ArrayList<>();
@@ -34,7 +34,7 @@ class FileLoader {
                   .forEach(path -> {
                       if (path.toString().toLowerCase().endsWith(".pdf")) {
                           documents.addAll(loadPdf(path));
-                      } else if (path.toString().toLowerCase().endsWith(".txt")) {
+                      } else if (path.toString().toLowerCase().endsWith(".txt") || path.toString().toLowerCase().endsWith(".md")) {
                           documents.add(loadText(path));
                       }
                   });

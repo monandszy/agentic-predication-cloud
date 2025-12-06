@@ -50,7 +50,7 @@ public class DebateService {
                 "Your previous position:\nProbability: %.2f\nRationale: %s\n\n" +
                 "Here is what other agents think:\n%s\n\n" +
                 "Based on these arguments, please reconsider your position. You can change your probability or keep it the same. " +
-                "Provide an updated rationale, addressing why you agree or disagree with others.\n" +
+                "Provide an updated rationale in 1-3 clean paragraphs, addressing why you agree or disagree with others. Do not use markdown formatting.\n" +
                 "Format your response exactly as follows:\n" +
                 "Probability: [0.0-1.0]\n" +
                 "Rationale: [Your explanation]",

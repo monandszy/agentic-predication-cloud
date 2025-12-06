@@ -43,6 +43,12 @@ public class LlmCacheService {
         log.debug("Cached response for hash: {}", hash);
     }
 
+    @Transactional
+    public void clearCache() {
+        log.info("Clearing all LLM cache entries");
+        llmCacheRepository.deleteAll();
+    }
+
     private String calculateHash(String prompt, String modelName) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");

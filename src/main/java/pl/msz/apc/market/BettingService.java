@@ -47,7 +47,7 @@ public class BettingService {
                 "Question: %s\n\n" +
                 "Context:\n%s\n\n" +
                 "Based on your persona and the provided context, estimate the probability (0.0 to 1.0) of the answer being YES. " +
-                "Provide a rationale for your decision.\n" +
+                "Provide a rationale for your decision in 1-3 clean paragraphs. Do not use markdown formatting.\n" +
                 "Format your response exactly as follows:\n" +
                 "Probability: [0.0-1.0]\n" +
                 "Rationale: [Your explanation]",
