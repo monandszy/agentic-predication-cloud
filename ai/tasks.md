@@ -7,18 +7,18 @@
 - [x] **T1.4**: Create `SharedKernel` package for common value objects. (Plan: P1.4)
 
 ## Phase 2: Ingestion Module
-- [ ] **T2.1**: Add `spring-ai-postgres-store` dependency. (Plan: P2.3)
-- [ ] **T2.2**: Create `Document` entity/record. (Plan: P2.1)
-- [ ] **T2.3**: Implement `FileLoader` service to read `.txt` and `.pdf` from a directory. (Plan: P2.1)
-- [ ] **T2.4**: Implement `TokenSplitter` to chunk text. (Plan: P2.1)
-- [ ] **T2.5**: Configure `EmbeddingClient` (Gemini). (Plan: P2.2)
-- [ ] **T2.6**: Implement `VectorStoreService` to save chunks + embeddings. (Plan: P2.3)
+- [x] **T2.1**: Add `spring-ai-postgres-store` dependency. (Plan: P2.3)
+- [x] **T2.2**: Create `Document` entity/record. (Plan: P2.1)
+- [x] **T2.3**: Implement `FileLoader` service to read `.txt` and `.pdf` from a directory. (Plan: P2.1)
+- [x] **T2.4**: Implement `TokenSplitter` to chunk text. (Plan: P2.1)
+- [x] **T2.5**: Configure `EmbeddingClient` (Vendor Agnostic). (Plan: P2.2)
+- [x] **T2.6**: Implement `VectorStoreService` to save chunks + embeddings. (Plan: P2.3)
 - [ ] **T2.7**: Implement `RetrievalService.findSimilar(String query)` method. (Plan: P2.4)
 
 ## Phase 3: Agents Module
-- [ ] **T3.1**: Add `spring-ai-gemini` dependency. (Plan: P3.1)
-- [ ] **T3.2**: Create `Persona` enum (ECONOMIST, SKEPTIC, etc.) with description fields. (Plan: P3.2)
-- [ ] **T3.3**: Create `Agent` class wrapping `ChatClient`. (Plan: P3.2)
+- [x] **T3.1**: Add `spring-ai-gemini` dependency. (Plan: P3.1)
+- [x] **T3.2**: Create `Persona` enum (ECONOMIST, SKEPTIC, etc.) with description fields. (Plan: P3.2)
+- [x] **T3.3**: Create `Agent` class wrapping `ChatClient`. (Plan: P3.2)
 - [ ] **T3.4**: Implement `AgentFactory.create(Persona p)` returning a configured Agent. (Plan: P3.3)
 - [ ] **T3.5**: Create `PromptTemplate` for betting, including placeholders for `{context}` and `{persona_bias}`. (Plan: P3.4)
 

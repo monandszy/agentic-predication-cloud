@@ -1,8 +1,8 @@
 # Technical Specification: Agent Prediction Cloud (APC)
 
-**Version:** 0.1 (Hackathon Prototype)
+**Version:** 0.2 (Refined Architecture)
 **Architecture:** Modular Monolith
-**Stack:** Java 21, Spring Boot 3.3, PostgreSQL, Google Gemini API
+**Stack:** Java 21, Spring Boot 3.3, PostgreSQL, Spring AI (Vendor Agnostic)
 
 ---
 
@@ -28,10 +28,11 @@ src/main/java/pl/msz/apc/
 
 *   **Language:** Java 21 (LTS).
 *   **Framework:** Spring Boot 3.3.
-*   **Build Tool:** Gradle (Groovy DSL).
-*   **LLM Integration:** **Spring AI** (Google Gemini Binder) - provides abstraction layer allowing easy swap to other models later.
+*   **Build Tool:** Gradle (Kotlin DSL).
+*   **LLM Integration:** **Spring AI** - Provides a portable abstraction layer. The system is designed to be vendor-agnostic, supporting providers like OpenAI, Azure OpenAI, Google Gemini, Ollama, etc., via configuration changes only.
 *   **Database:** PostgreSQL 16+ with `pgvector` extension.
 *   **ORM:** Spring Data JPA + Hibernate.
+*   **Migration:** Liquibase.
 *   **Boilerplate:** Project Lombok.
 *   **Testing:** JUnit 5, Testcontainers (for Postgres).
 
@@ -45,7 +46,7 @@ Responsible for loading the "world state" and context documents.
 *   **Responsibilities:**
     *   Loading text files/PDFs.
     *   Chunking text for RAG.
-    *   Generating embeddings (using Gemini Embedding Model).
+    *   Generating embeddings using the configured **Embedding Model** (e.g., `text-embedding-3-small` or `embedding-001`).
     *   Storing vectors in PostgreSQL.
 *   **Key Components:**
     *   `DocumentService`: Handles file upload and processing.
@@ -53,7 +54,7 @@ Responsible for loading the "world state" and context documents.
     *   `KnowledgeRetrievalService`: Public API to get relevant context for a specific query.
 
 ### 3.2. Module: `agents`
-Manages the AI personas. This is the interface to the Google Gemini API.
+Manages the AI personas. This is the interface to the LLM Provider.
 
 *   **Responsibilities:**
     *   Defining System Prompts (Personas: Economist, Skeptic, Strategist).
@@ -61,10 +62,10 @@ Manages the AI personas. This is the interface to the Google Gemini API.
     *   Injecting context (RAG) into prompts.
 *   **Key Components:**
     *   `AgentFactory`: Creates instances of agents with specific `SystemPrompt` templates.
-    *   `GeminiClient`: Wrapper around Spring AI `ChatClient`.
+    *   `LlmClient`: Wrapper around Spring AI `ChatClient`.
     *   **Configuration:**
-        *   Model: `gemini-1.5-flash` (for betting rounds - speed/cost).
-        *   Model: `gemini-1.5-pro` (for final synthesis - reasoning depth).
+        *   **Fast Model:** Used for betting rounds (e.g., `gpt-4o-mini`, `gemini-1.5-flash`).
+        *   **Reasoning Model:** Used for final synthesis (e.g., `gpt-4o`, `gemini-1.5-pro`).
 
 ### 3.3. Module: `market`
 The core business logic. It does not know about "AI" directly; it asks the `agents` module for decisions.
@@ -95,7 +96,7 @@ Generates the final artifact required by MSZ.
 CREATE TABLE documents (
     id UUID PRIMARY KEY,
     content TEXT,
-    embedding VECTOR(768) -- Google Gemini embedding dimension
+    embedding VECTOR(1536) -- Dimension depends on the model (e.g., 1536 for OpenAI, 768 for Gemini)
 );
 
 -- Market Structure
@@ -124,7 +125,37 @@ CREATE TABLE bets (
 
 ---
 
-## 5. API Design (REST)
+## 5. Deployment & Infrastructure
+
+The application is containerized using Docker and orchestrated with Docker Compose.
+
+### 5.1. Container Structure
+*   **Application Container (`agentic-prediction-cloud`):**
+    *   Base Image: `eclipse-temurin:21-jdk-alpine`
+    *   Builds from the local Gradle project.
+    *   Exposes port 8080 (mapped to host 8080).
+    *   Depends on the `data` network.
+    *   **Environment Variables:**
+        *   `SPRING_PROFILES_ACTIVE`: `prod` or `dev`.
+        *   `SPRING_AI_OPENAI_API_KEY` / `SPRING_AI_GEMINI_API_KEY`: Injected at runtime.
+*   **Database Container (`data-postgres`):**
+    *   Image: `pgvector/pgvector:pg16` (PostgreSQL 16 with vector extension).
+    *   Exposes port 5432.
+    *   Persists data to a named volume `pgdata`.
+    *   Initializes schemas (`app`, `app_dev`) via `init.sql`.
+
+### 5.2. Deployment Scripts
+*   `deploy.ps1`: PowerShell script to build the JAR and restart containers.
+*   `docker/compose-data.yml`: Defines the persistent database service.
+*   `docker/compose-prod.yml`: Defines the application service for production profile.
+
+### 5.3. Profiles
+*   **prod:** Uses the `app` schema.
+*   **dev:** Uses the `app_dev` schema (isolated environment).
+
+---
+
+## 6. API Design (REST)
 
 Since there is no UI yet, the API drives the process.
 
@@ -148,31 +179,23 @@ Since there is no UI yet, the API drives the process.
 
 ---
 
-## 6. Implementation Strategy (Hackathon Mode)
+## 7. Implementation Strategy (Hackathon Mode)
 
-1.  **Skeleton:** Initialize Spring Boot with `spring-boot-starter-data-jpa`, `spring-boot-starter-web`, `spring-ai-google-gemini-spring-boot-starter`, `lombok`.
+1.  **Skeleton:** Initialize Spring Boot with `spring-boot-starter-data-jpa`, `spring-boot-starter-web`, `spring-ai-starter` (generic), `lombok`.
 2.  **Database:** Run Postgres locally via Docker Compose.
-3.  **Spring AI Setup:** Configure `application.yml` with `spring.ai.google.gemini.api-key`.
+3.  **Spring AI Setup:** Configure `application.yml` with generic properties, allowing injection of specific vendor keys.
 4.  **Mocking (Speed):**
     *   Create a `MockIngestionService` first that uses hardcoded text strings about Atlantis to test the Market Logic without waiting for file parsers.
 5.  **Agent Loop:**
-    *   Implement the `AgentService` to take a `Question`, fetch `Context`, and return a `Bet` object using Gemini JSON mode (structured output).
+    *   Implement the `AgentService` to take a `Question`, fetch `Context`, and return a `Bet` object using the Chat Client's structured output capabilities.
 
-## 7. Docker Deployment
+## 8. Scalability & Security Notes
 
-The application is containerized using Docker and orchestrated with Docker Compose.
-
-### 7.1. Container Structure
-*   **Application Container (`agentic-prediction-cloud`):**
-    *   Base Image: `eclipse-temurin:21-jdk-alpine`
-    *   Builds from the local Gradle project.
-    *   Exposes port 8080 (mapped to host 8080).
-    *   Depends on the `data` network.
-*   **Database Container (`data-postgres`):**
-    *   Image: `pgvector/pgvector:pg16` (PostgreSQL 16 with vector extension).
-    *   Exposes port 5432.
-    *   Persists data to a named volume `pgdata`.
-    *   Initializes schemas (`app`, `app_dev`) via `init.sql`.
+*   **Scalability:** The stateless nature of the `agents` module means we can horizontally scale the application. The bottleneck is the Database (solved by Postgres robustness) and API Rate Limits (solved by implementing a Rate Limiter in the `LlmClient`).
+*   **Security:**
+    *   API Keys are injected via Environment Variables.
+    *   Prompts are sanitized.
+    *   In the future, the `LlmClient` interface can be swapped for an `OllamaClient` implementation to run local models (Llama 3) for air-gapped security without changing business logic.
 
 ### 7.2. Deployment Scripts
 *   `deploy.ps1`: PowerShell script to build the JAR and restart containers.
