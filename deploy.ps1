@@ -9,7 +9,19 @@ Write-Host "Starting Database..."
 docker-compose -p data -f compose-data.yml up -d
 
 Write-Host "Starting Application..."
-docker-compose -p agentic-prediction-cloud -f compose-prod.yml --env-file ../.env up -d --build
+
+# Load .env variables
+if (Test-Path "../.env") {
+    Get-Content "../.env" | ForEach-Object {
+        if ($_ -match '^\s*([^#=]+?)\s*=\s*(.*?)\s*$') {
+            $name = $matches[1]
+            $value = $matches[2]
+            [Environment]::SetEnvironmentVariable($name, $value, "Process")
+        }
+    }
+}
+
+docker-compose -p agentic-prediction-cloud -f compose-prod.yml up -d --build
 
 Write-Host "Deployment complete."
 Set-Location ..

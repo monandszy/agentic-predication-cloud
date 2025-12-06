@@ -17,7 +17,6 @@ spring:
     password: postgres
     url: jdbc:postgresql://postgres:5432/postgres
     hikari:
-      schema: app
       idle-timeout: 10000
       connection-timeout: 20000
       minimum-idle: 10
@@ -47,7 +46,7 @@ spring:
       base-url: https://generativelanguage.googleapis.com/v1beta/openai/
       chat:
         options:
-          model: gemini-1.5-flash
+          model: gemini-2.0-flash
 
 logging:
   pattern:

@@ -1,2 +1,6 @@
 CREATE SCHEMA IF NOT EXISTS app;
 CREATE SCHEMA IF NOT EXISTS app_dev;
+CREATE EXTENSION IF NOT EXISTS vector SCHEMA public;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp" SCHEMA public;
+
+ALTER ROLE postgres SET search_path TO app, app_dev, public;

@@ -20,3 +20,6 @@ This document provides instructions on how to work with the `ai/tasks.md` checkl
 *   **Requirements:** `ai/requirements.md` - The source of truth for what needs to be built.
 *   **Plan:** `ai/plan.md` - The high-level strategy for implementation.
 *   **Tech Spec:** `ai/technical_specification.md` - Detailed technical decisions and architecture.
+
+## Testing
+*   **Docker Host:** When testing the application running in Docker, use the host IP `192.168.99.104` instead of `localhost`.

@@ -14,7 +14,9 @@ class AgentController {
     private final LlmClient llmClient;
 
     @PostMapping("/chat")
-    public String chat(@RequestParam String message, @RequestParam(defaultValue = "ECONOMIST") Persona persona) {
-        return llmClient.chat(message, persona);
+    public String chat(@RequestParam String message, 
+                       @RequestParam(defaultValue = "ECONOMIST") Persona persona,
+                       @RequestParam(defaultValue = "FAST") ModelType modelType) {
+        return llmClient.chat(message, persona, modelType);
     }
 }
