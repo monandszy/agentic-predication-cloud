@@ -63,12 +63,14 @@ public class NarrativeGenerator {
                 "Final Consensus Probability: %.2f\n\n" +
                 "Agent Positions:\n%s\n\n" +
                 "Write a single, concise paragraph (max 5 sentences) summarizing the final agent verdict. " +
-                "Focus on the collective conclusion and the primary reason for it.",
+                "Focus on the collective conclusion and the primary reason for it. " +
+                "DO NOT repeat the question. DO NOT include any headers or introductory text like 'Final Verdict'. " +
+                "Start directly with the summary.",
                 question.getText(),
                 consensus,
                 betsSummary
         );
 
-        return llmClient.chat(prompt, Persona.MARKET_MAKER, ModelType.SMART);
+        return llmClient.chat(prompt, Persona.REPORTER, ModelType.SMART);
     }
 }

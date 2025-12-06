@@ -30,22 +30,14 @@ public class MarkdownReportExporter implements ReportExporter {
 
         // 1. Final Verdict (TL;DR)
         sb.append("## 1. Final Verdict\n\n");
-        sb.append("> ").append(verdict).append("\n\n");
+        if (!market.getQuestions().isEmpty()) {
+            sb.append("> **Question:** ").append(market.getQuestions().get(0).getText()).append("\n\n");
+        }
+        sb.append(verdict).append("\n\n");
         sb.append("---\n\n");
 
-        // Description
-        sb.append("## 2. Simulation Overview\n\n");
-        sb.append("**Topic Description:**\n");
-        sb.append(market.getDescription()).append("\n\n");
-
-        sb.append("**Questions Analyzed:**\n");
-        for (Question q : market.getQuestions()) {
-            sb.append("- ").append(q.getText()).append("\n");
-        }
-        sb.append("\n");
-
         // Detailed Analysis per Question
-        sb.append("## 3. Detailed Analysis\n\n");
+        sb.append("## 2. Detailed Analysis\n\n");
         
         for (Question question : market.getQuestions()) {
             sb.append("### Question: ").append(question.getText()).append("\n\n");
@@ -83,7 +75,7 @@ public class MarkdownReportExporter implements ReportExporter {
         }
 
         // Final Narrative
-        sb.append("## 4. Executive Summary\n\n");
+        sb.append("## 3. Executive Summary\n\n");
         sb.append(narrative).append("\n");
         
         return sb.toString().getBytes(StandardCharsets.UTF_8);

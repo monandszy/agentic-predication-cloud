@@ -52,12 +52,14 @@ class MarkdownReportExporterTest {
 
         // Then
         assertThat(report).contains("# Market Report: Test Market");
-        assertThat(report).contains("## Description\nA test market description");
-        assertThat(report).contains("- Will this test pass?");
-        assertThat(report).contains("### Round 1");
-        assertThat(report).contains("**The Economist**: 0.85");
-        assertThat(report).contains("- *Rationale*: Economic indicators look good.");
-        assertThat(report).contains("### Round 2");
+        assertThat(report).contains("## 1. Final Verdict");
+        assertThat(report).contains("The final verdict is uncertain.");
+        assertThat(report).contains("## 2. Detailed Analysis");
+        assertThat(report).contains("### Question: Will this test pass?");
+        assertThat(report).contains("#### Round 1");
+        assertThat(report).contains("| The Economist | 0.85 |");
+        assertThat(report).contains("> Economic indicators look good.");
+        assertThat(report).contains("#### Round 2");
         assertThat(report).contains("**The Skeptic**: 0.40");
         assertThat(report).contains("## Final Narrative");
         assertThat(report).contains("The market concluded with mixed feelings.");

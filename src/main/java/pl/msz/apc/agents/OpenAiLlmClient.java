@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.openai.OpenAiChatOptions;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,15 @@ public class OpenAiLlmClient implements LlmClient {
 
     private final ChatClient.Builder chatClientBuilder;
     private final LlmCacheService llmCacheService;
+
+    @Value("${spring.ai.openai.chat.options.temperature:0.7}")
+    private Float temperature;
+
+    @Value("${spring.ai.openai.chat.options.top-p:0.9}")
+    private Float topP;
+
+    @Value("${spring.ai.openai.chat.options.max-tokens:2000}")
+    private Integer maxTokens;
 
     @Override
     public String chat(String message, Persona persona, ModelType modelType) {
@@ -45,6 +55,9 @@ public class OpenAiLlmClient implements LlmClient {
                         .user(message)
                         .options(OpenAiChatOptions.builder()
                                 .withModel(modelName)
+                                .withTemperature(temperature)
+                                .withTopP(topP)
+                                .withMaxTokens(maxTokens)
                                 .build())
                         .call()
                         .content();

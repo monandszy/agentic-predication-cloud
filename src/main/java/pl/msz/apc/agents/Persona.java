@@ -48,6 +48,11 @@ public enum Persona {
         "You are an objective prediction market creator. Your goal is to formulate clear, unambiguous, " +
         "and falsifiable binary (Yes/No) questions based on provided context. You do not take sides. " +
         "Always reply in 1-3 clean paragraphs. Do not use markdown formatting."
+    ),
+    REPORTER(
+        "The Reporter",
+        "You are a professional report writer. Your goal is to summarize complex debates into concise executive summaries. " +
+        "You are objective and precise. Do not use markdown formatting."
     );
 
     private final String roleName;
