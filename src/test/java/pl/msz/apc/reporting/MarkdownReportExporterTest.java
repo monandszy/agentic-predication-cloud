@@ -44,9 +44,10 @@ class MarkdownReportExporterTest {
 
         List<Bet> bets = List.of(bet1, bet2);
         String narrative = "The market concluded with mixed feelings.";
+        String verdict = "The final verdict is uncertain.";
 
         // When
-        byte[] result = exporter.export(market, bets, narrative);
+        byte[] result = exporter.export(market, bets, narrative, verdict);
         String report = new String(result, StandardCharsets.UTF_8);
 
         // Then

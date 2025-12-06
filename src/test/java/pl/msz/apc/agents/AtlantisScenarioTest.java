@@ -10,8 +10,13 @@ import pl.msz.apc.ingestion.FileLoader;
 import pl.msz.apc.ingestion.VectorStoreService;
 import pl.msz.apc.market.*;
 import pl.msz.apc.reporting.ConsensusCalculator;
+import pl.msz.apc.reporting.MarkdownReportExporter;
 import pl.msz.apc.reporting.NarrativeGenerator;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
@@ -38,6 +43,9 @@ class AtlantisScenarioTest {
 
     @Autowired
     private NarrativeGenerator narrativeGenerator;
+
+    @Autowired
+    private MarkdownReportExporter reportExporter;
 
     @Autowired
     private BetRepository betRepository;
@@ -83,11 +91,26 @@ class AtlantisScenarioTest {
         List<Bet> round2Bets = betRepository.findByQuestionAndRound(question, 2);
         double consensus = consensusCalculator.calculateConsensus(round2Bets);
         String report = narrativeGenerator.generateReport(question, round2Bets, consensus);
+        String verdict = narrativeGenerator.generateVerdict(question, round2Bets, consensus);
 
         System.out.println("\n==========================================");
         System.out.println("FINAL REPORT");
         System.out.println("==========================================\n");
+        System.out.println("VERDICT: " + verdict + "\n");
         System.out.println(report);
         System.out.println("\n==========================================");
+
+        // 6. Save Report to File
+        List<Bet> allBets = new ArrayList<>();
+        allBets.addAll(round1Bets);
+        allBets.addAll(round2Bets);
+
+        byte[] reportBytes = reportExporter.export(market, allBets, report, verdict);
+        try {
+            Files.write(Paths.get("Atlantis_Report.md"), reportBytes);
+            System.out.println("Report saved to Atlantis_Report.md");
+        } catch (IOException e) {
+            System.err.println("Failed to save report: " + e.getMessage());
+        }
     }
 }

@@ -6,6 +6,9 @@ import pl.msz.apc.market.Market;
 import pl.msz.apc.market.Question;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -15,44 +18,76 @@ import java.util.stream.Collectors;
 public class MarkdownReportExporter implements ReportExporter {
 
     @Override
-    public byte[] export(Market market, List<Bet> bets, String narrative) {
+    public byte[] export(Market market, List<Bet> bets, String narrative, String verdict) {
         StringBuilder sb = new StringBuilder();
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
+        // Title and Metadata
         sb.append("# Market Report: ").append(market.getName()).append("\n\n");
-        sb.append("## Description\n");
+        sb.append("> **Generated:** ").append(timestamp).append("\n");
+        sb.append("> **Simulation ID:** ").append(market.getId()).append("\n\n");
+        sb.append("---\n\n");
+
+        // 1. Final Verdict (TL;DR)
+        sb.append("## 1. Final Verdict\n\n");
+        sb.append("> ").append(verdict).append("\n\n");
+        sb.append("---\n\n");
+
+        // Description
+        sb.append("## 2. Simulation Overview\n\n");
+        sb.append("**Topic Description:**\n");
         sb.append(market.getDescription()).append("\n\n");
 
-        sb.append("## Questions\n");
+        sb.append("**Questions Analyzed:**\n");
         for (Question q : market.getQuestions()) {
             sb.append("- ").append(q.getText()).append("\n");
         }
         sb.append("\n");
+
+        // Detailed Analysis per Question
+        sb.append("## 3. Detailed Analysis\n\n");
         
         for (Question question : market.getQuestions()) {
-            sb.append("## Question: ").append(question.getText()).append("\n\n");
+            sb.append("### Question: ").append(question.getText()).append("\n\n");
             
             Map<Integer, List<Bet>> betsByRound = bets.stream()
                     .filter(b -> b.getQuestion().getId().equals(question.getId()))
                     .collect(Collectors.groupingBy(Bet::getRound));
             
-            betsByRound.forEach((round, roundBets) -> {
-                sb.append("### Round ").append(round).append("\n");
-                for (Bet bet : roundBets) {
-                    sb.append("- **").append(bet.getAgentPersona().getRoleName()).append("**")
-                      .append(": ").append(String.format(Locale.US, "%.2f", bet.getProbability()))
-                      .append("\n  - *Rationale*: ").append(bet.getRationale()).append("\n");
-                }
-                sb.append("\n");
-            });
+            // Sort rounds
+            betsByRound.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .forEach(entry -> {
+                    Integer round = entry.getKey();
+                    List<Bet> roundBets = entry.getValue();
+                    
+                    sb.append("#### Round ").append(round).append("\n\n");
+                    
+                    // Summary Table for the round
+                    sb.append("| Agent | Probability |\n");
+                    sb.append("|-------|-------------|\n");
+                    for (Bet bet : roundBets) {
+                        sb.append("| ").append(bet.getAgentPersona().getRoleName())
+                          .append(" | ").append(String.format(Locale.US, "%.2f", bet.getProbability())).append(" |\n");
+                    }
+                    sb.append("\n");
+
+                    // Detailed Rationales
+                    sb.append("**Detailed Rationales:**\n\n");
+                    for (Bet bet : roundBets) {
+                        sb.append("##### ").append(bet.getAgentPersona().getRoleName()).append("\n");
+                        sb.append("> ").append(bet.getRationale().replace("\n", "\n> ")).append("\n\n");
+                    }
+                    sb.append("---\n\n");
+                });
         }
 
-        sb.append("## Final Narrative\n\n");
+        // Final Narrative
+        sb.append("## 4. Executive Summary\n\n");
         sb.append(narrative).append("\n");
-
+        
         return sb.toString().getBytes(StandardCharsets.UTF_8);
-    }
-
-    @Override
+    }    @Override
     public String getContentType() {
         return "text/markdown";
     }

@@ -46,4 +46,29 @@ public class NarrativeGenerator {
         // But LlmClient requires a Persona. Let's use MARKET_MAKER.
         return llmClient.chat(prompt, Persona.MARKET_MAKER, ModelType.SMART);
     }
+
+    public String generateVerdict(Question question, List<Bet> finalBets, double consensus) {
+        log.info("Generating final verdict for question: {}", question.getText());
+
+        String betsSummary = finalBets.stream()
+                .map(b -> String.format("- %s: %.2f (Rationale: %s)",
+                        b.getAgentPersona().getRoleName(),
+                        b.getProbability(),
+                        b.getRationale()))
+                .collect(Collectors.joining("\n"));
+
+        String prompt = String.format(
+                "You are a professional market analyst.\n\n" +
+                "Question: %s\n\n" +
+                "Final Consensus Probability: %.2f\n\n" +
+                "Agent Positions:\n%s\n\n" +
+                "Write a single, concise paragraph (max 5 sentences) summarizing the final agent verdict. " +
+                "Focus on the collective conclusion and the primary reason for it.",
+                question.getText(),
+                consensus,
+                betsSummary
+        );
+
+        return llmClient.chat(prompt, Persona.MARKET_MAKER, ModelType.SMART);
+    }
 }

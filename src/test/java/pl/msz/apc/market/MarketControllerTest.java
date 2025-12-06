@@ -83,9 +83,10 @@ class MarketControllerTest {
         when(betRepository.findByQuestionAndRound(any(Question.class), eq(2))).thenReturn(Collections.emptyList());
         when(consensusCalculator.calculateConsensus(anyList())).thenReturn(0.75);
         when(narrativeGenerator.generateReport(any(Question.class), anyList(), eq(0.75))).thenReturn("Final Report Content");
+        when(narrativeGenerator.generateVerdict(any(Question.class), anyList(), eq(0.75))).thenReturn("Final Verdict Content");
         
         byte[] fileContent = "Markdown Content".getBytes();
-        when(reportExporter.export(any(Market.class), anyList(), anyString())).thenReturn(fileContent);
+        when(reportExporter.export(any(Market.class), anyList(), anyString(), anyString())).thenReturn(fileContent);
         when(reportExporter.getContentType()).thenReturn("text/markdown");
 
         // When & Then

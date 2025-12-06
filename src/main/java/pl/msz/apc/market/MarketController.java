@@ -93,13 +93,14 @@ public class MarketController {
         List<Bet> round2Bets = betRepository.findByQuestionAndRound(question, 2);
         double consensus = consensusCalculator.calculateConsensus(round2Bets);
         String narrative = narrativeGenerator.generateReport(question, round2Bets, consensus);
+        String verdict = narrativeGenerator.generateVerdict(question, round2Bets, consensus);
 
         // Collect all bets for the report
         List<Bet> allBets = new ArrayList<>();
         allBets.addAll(round1Bets);
         allBets.addAll(round2Bets);
 
-        byte[] fileContent = reportExporter.export(market, allBets, narrative);
+        byte[] fileContent = reportExporter.export(market, allBets, narrative, verdict);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=report.md")
