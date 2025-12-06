@@ -15,7 +15,6 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: postgres
-    # database created based on spring.application.name see DatabaseInitializer
     url: jdbc:postgresql://postgres:5432/postgres
     hikari:
       schema: app

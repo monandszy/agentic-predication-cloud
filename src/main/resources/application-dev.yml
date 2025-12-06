@@ -10,3 +10,9 @@ spring:
     name: app-dev
   datasource:
     url: jdbc:postgresql://192.168.99.104:5432/postgres
+    username: postgres
+    password: postgres
+    hikari:
+      schema: app_dev
+  liquibase:
+    default-schema: app_dev
