@@ -1,1 +1,3 @@
-databaseChangeLog: []
+databaseChangeLog:
+  - include:
+      file: database/changelog/01-market-init.yaml

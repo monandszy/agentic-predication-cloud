@@ -47,6 +47,9 @@ spring:
       chat:
         options:
           model: gemini-2.0-flash
+      embedding:
+        options:
+          model: text-embedding-004
 
 logging:
   pattern:

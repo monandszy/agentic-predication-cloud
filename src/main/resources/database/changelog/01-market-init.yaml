@@ -1,0 +1,74 @@
+databaseChangeLog:
+  - changeSet:
+      id: 01-create-market-tables
+      author: copilot
+      changes:
+        - createTable:
+            tableName: markets
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+              - column:
+                  name: description
+                  type: varchar(255)
+              - column:
+                  name: created_at
+                  type: timestamp
+              - column:
+                  name: closed_at
+                  type: timestamp
+        - createTable:
+            tableName: questions
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: text
+                  type: text
+              - column:
+                  name: market_id
+                  type: uuid
+                  constraints:
+                    foreignKeyName: fk_question_market
+                    references: markets(id)
+        - createTable:
+            tableName: bets
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: question_id
+                  type: uuid
+                  constraints:
+                    foreignKeyName: fk_bet_question
+                    references: questions(id)
+              - column:
+                  name: agent_persona
+                  type: varchar(50)
+              - column:
+                  name: probability
+                  type: double
+              - column:
+                  name: rationale
+                  type: text
+              - column:
+                  name: round
+                  type: int
+              - column:
+                  name: placed_at
+                  type: timestamp

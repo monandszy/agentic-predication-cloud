@@ -1,10 +1,4 @@
 spring.config.activate.on-profile: dev
-server:
-  port: 8000
-  servlet:
-    context-path: /
-  error:
-    path: /error
 spring:
   application:
     name: app-dev
@@ -14,3 +8,9 @@ spring:
     password: postgres
   liquibase:
     default-schema: app_dev
+  ai:
+    openai:
+      embedding:
+        enabled: false
+server:
+  port: 8080
