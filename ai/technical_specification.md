@@ -158,6 +158,30 @@ Since there is no UI yet, the API drives the process.
 5.  **Agent Loop:**
     *   Implement the `AgentService` to take a `Question`, fetch `Context`, and return a `Bet` object using Gemini JSON mode (structured output).
 
+## 7. Docker Deployment
+
+The application is containerized using Docker and orchestrated with Docker Compose.
+
+### 7.1. Container Structure
+*   **Application Container (`agentic-prediction-cloud`):**
+    *   Base Image: `eclipse-temurin:21-jdk-alpine`
+    *   Builds from the local Gradle project.
+    *   Exposes port 8080 (mapped to host 8080).
+    *   Depends on the `data` network.
+*   **Database Container (`data-postgres`):**
+    *   Image: `pgvector/pgvector:pg16` (PostgreSQL 16 with vector extension).
+    *   Exposes port 5432.
+    *   Persists data to a named volume `pgdata`.
+    *   Initializes schemas (`app`, `app_dev`) via `init.sql`.
+
+### 7.2. Deployment Scripts
+*   `deploy.ps1`: PowerShell script to build the JAR and restart containers.
+*   `docker/compose-data.yml`: Defines the persistent database service.
+*   `docker/compose-prod.yml`: Defines the application service for production profile.
+
+### 7.3. Profiles
+*   **prod:** Uses the `app` schema.
+*   **dev:** Uses the `app_dev` schema (isolated environment).
 
 ## 8. Scalability & Security Notes
 
@@ -167,10 +191,3 @@ Since there is no UI yet, the API drives the process.
     *   Prompts are sanitized.
     *   In the future, the `GeminiClient` interface can be swapped for an `OllamaClient` implementation to run local models (Llama 3) for air-gapped security without changing business logic.
 
-## 9. Docker deployment
-
-*   **Scalability:** The stateless nature of the `agents` module means we can horizontally scale the application. The bottleneck is the Database (solved by Postgres robustness) and API Rate Limits (solved by implementing a Rate Limiter in the `GeminiClient`).
-*   **Security:**
-    *   API Keys are injected via Environment Variables.
-    *   Prompts are sanitized.
-    *   In the future, the `GeminiClient` interface can be swapped for an `OllamaClient` implementation to run local models (Llama 3) for air-gapped security without changing business logic.
