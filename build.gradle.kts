@@ -24,8 +24,12 @@ extra["springModulithVersion"] = "1.2.0"
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    // implementation("org.springframework.ai:spring-ai-google-gemini-spring-boot-starter")
+    implementation("org.springframework.ai:spring-ai-openai-spring-boot-starter")
+    implementation("org.springframework.ai:spring-ai-pgvector-store-spring-boot-starter")
+    implementation("org.springframework.ai:spring-ai-pdf-document-reader")
     implementation("org.springframework.modulith:spring-modulith-starter-core")
+    implementation("me.paulschwarz:spring-dotenv:4.0.0")
+    implementation("com.google.genai:google-genai:0.4.0")
     
     implementation("org.liquibase:liquibase-core")
     runtimeOnly("org.postgresql:postgresql")
@@ -51,5 +55,5 @@ tasks.withType<Test> {
 }
 
 springBoot {
-    mainClass.set("code.App")
+    mainClass.set("pl.msz.apc.ApcApplication")
 }

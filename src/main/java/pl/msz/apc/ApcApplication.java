@@ -1,4 +1,4 @@
-package code;
+package pl.msz.apc;
 
 import jakarta.annotation.PostConstruct;
 import java.util.TimeZone;
@@ -8,11 +8,11 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.modulith.Modulithic;
 
 @Modulithic
-@SpringBootApplication()
-public class App extends SpringBootServletInitializer {
+@SpringBootApplication
+public class ApcApplication extends SpringBootServletInitializer {
 
   public static void main(String[] args) {
-    SpringApplication.run(App.class, args);
+    SpringApplication.run(ApcApplication.class, args);
   }
 
   @PostConstruct

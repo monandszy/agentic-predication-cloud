@@ -35,6 +35,19 @@ spring:
     properties.hibernate.jdbc.batch_size: 5
     properties.hibernate.order_inserts: true
     properties.hibernate.order_updates: true
+  ai:
+    vectorstore:
+      pgvector:
+        initialize-schema: true
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+        dimensions: 768
+    openai:
+      api-key: ${SPRING_AI_GOOGLE_AI_GEMINI_API_KEY}
+      base-url: https://generativelanguage.googleapis.com/v1beta/openai/
+      chat:
+        options:
+          model: gemini-1.5-flash
 
 logging:
   pattern:
