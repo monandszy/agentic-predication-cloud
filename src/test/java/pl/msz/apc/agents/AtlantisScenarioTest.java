@@ -24,93 +24,84 @@ import java.util.List;
 class AtlantisScenarioTest {
 
     @Autowired
-    private FileLoader fileLoader;
+    private pl.msz.apc.research.FactProcessor factProcessor;
 
     @Autowired
-    private VectorStoreService vectorStoreService;
+    private pl.msz.apc.reporting.ScenarioSynthesizer scenarioSynthesizer;
 
     @Autowired
-    private MarketMakerService marketMakerService;
-
-    @Autowired
-    private BettingService bettingService;
-
-    @Autowired
-    private DebateService debateService;
-
-    @Autowired
-    private ConsensusCalculator consensusCalculator;
-
-    @Autowired
-    private NarrativeGenerator narrativeGenerator;
-
-    @Autowired
-    private MarkdownReportExporter reportExporter;
-
-    @Autowired
-    private BetRepository betRepository;
-
-    // @DynamicPropertySource
-    // static void configureProperties(DynamicPropertyRegistry registry) {
-    //     // Override datasource to localhost for the test execution
-    //     registry.add("spring.datasource.url", () -> "jdbc:postgresql://localhost:5432/postgres");
-    // }
+    private ScenarioGenerationService scenarioGenerationService;
 
     @Test
-    void runAtlantisSimulation() {
-        // 1. Ingest Data
-        System.out.println("--- Ingesting Atlantis Scenarios ---");
-        var documents = fileLoader.loadDocuments("data");
-        vectorStoreService.saveDocuments(documents);
-        System.out.println("--- Ingestion Complete ---");
+    void runAtlantisSimulation() throws IOException {
+        // 1. Simulating Web Scrape (Reading local file)
+        System.out.println("--- Simulating Web Scrape (Atlantis Scenarios) ---");
+        String content = Files.readString(Paths.get("data/Atlantis_Scenarios.md"));
+        List<String> rawData = List.of(content);
 
-        // 2. Create Market
-        String topic = "Atlantis Future Scenarios";
-        System.out.println("--- Creating Market for: " + topic + " ---");
-        Market market = marketMakerService.createMarket(topic);
+        // 2. Fact Extraction
+        System.out.println("--- Extracting Facts ---");
+        List<String> rawFacts = factProcessor.extractFacts(rawData);
+        List<String> facts = new ArrayList<>();
+        for (int i = 0; i < rawFacts.size(); i++) {
+            facts.add((i + 1) + ". " + rawFacts.get(i));
+        }
         
-        if (market.getQuestions().isEmpty()) {
-            throw new RuntimeException("No questions generated for topic: " + topic);
-        }
+        System.out.println("Found " + facts.size() + " facts:");
+        facts.forEach(System.out::println);
 
-        Question question = market.getQuestions().get(0);
-        System.out.println("Generated Question: " + question.getText());
-
-        // 3. Round 1: Initial Bets
-        System.out.println("--- Round 1: Collecting Bets ---");
+        // 3. Agent Scenario Generation
+        System.out.println("--- Generating Agent Scenarios ---");
         List<Persona> agents = List.of(Persona.ECONOMIST, Persona.SKEPTIC, Persona.STRATEGIST, Persona.FUTURIST);
-        bettingService.collectBets(question, agents);
+        List<AgentScenario> agentScenarios = scenarioGenerationService.generateScenarios(facts, agents);
 
-        // 4. Round 2: Debate
-        System.out.println("--- Round 2: Debate ---");
-        List<Bet> round1Bets = betRepository.findByQuestionAndRound(question, 1);
-        debateService.runDebateRound(question, round1Bets);
+        agentScenarios.forEach(scenario -> {
+            System.out.println("\n=== " + scenario.persona().getRoleName() + " ===");
+            System.out.println(scenario.description());
+        });
 
-        // 5. Consensus & Reporting
-        System.out.println("--- Generating Report ---");
-        List<Bet> round2Bets = betRepository.findByQuestionAndRound(question, 2);
-        double consensus = consensusCalculator.calculateConsensus(round2Bets);
-        String report = narrativeGenerator.generateReport(question, round2Bets, consensus);
-        String verdict = narrativeGenerator.generateVerdict(question, round2Bets, consensus);
+        // 4. Report Synthesis
+        System.out.println("\n--- Synthesizing Final Report (Atlantis Interests) ---");
+        List<pl.msz.apc.reporting.PredictionScenario> finalScenarios = scenarioSynthesizer.synthesizeScenarios(facts, agentScenarios);
 
         System.out.println("\n==========================================");
-        System.out.println("FINAL REPORT");
+        System.out.println("FINAL STRATEGIC REPORT: ATLANTIS INTERESTS");
         System.out.println("==========================================\n");
-        System.out.println("VERDICT: " + verdict + "\n");
-        System.out.println(report);
-        System.out.println("\n==========================================");
 
-        // 6. Save Report to File
-        List<Bet> allBets = new ArrayList<>();
-        allBets.addAll(round1Bets);
-        allBets.addAll(round2Bets);
+        StringBuilder reportContent = new StringBuilder();
+        reportContent.append("# FINAL STRATEGIC REPORT: ATLANTIS INTERESTS\n\n");
 
-        byte[] reportBytes = reportExporter.export(market, allBets, report, verdict);
-        try {
-            Files.write(Paths.get("Atlantis_Report.md"), reportBytes);
-            System.out.println("Report saved to Atlantis_Report.md");
-        } catch (IOException e) {
-            System.err.println("Failed to save report: " + e.getMessage());
+        for (pl.msz.apc.reporting.PredictionScenario scenario : finalScenarios) {
+            String scenarioText = String.format("""
+                ## SCENARIO: %s - %s
+                **TITLE:** %s
+                
+                ### Description
+                %s
+                
+                ### Recommendations
+                %s
+                
+                ---
+                
+                """,
+                scenario.timeframe(),
+                scenario.variant().toUpperCase(),
+                scenario.title(),
+                scenario.description(),
+                scenario.recommendations()
+            );
+            
+            System.out.println(scenarioText);
+            reportContent.append(scenarioText);
         }
+
+        reportContent.append("\n## List of Facts\n");
+        for (String fact : facts) {
+            reportContent.append(fact).append("\n");
+        }
+
+        Files.writeString(Paths.get("Atlantis_Strategic_Report.md"), reportContent.toString());
+        System.out.println("Report saved to Atlantis_Strategic_Report.md");
     }
 }

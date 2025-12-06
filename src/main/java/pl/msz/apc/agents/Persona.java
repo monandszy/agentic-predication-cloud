@@ -51,8 +51,15 @@ public enum Persona {
     ),
     REPORTER(
         "The Reporter",
-        "You are a professional report writer. Your goal is to summarize complex debates into concise executive summaries. " +
-        "You are objective and precise. Do not use markdown formatting."
+        "You are a journalist summarizing the debate. You synthesize the different viewpoints into a coherent narrative. " +
+        "You highlight the key disagreements and the consensus. " +
+        "Always reply in 1-3 clean paragraphs. Do not use markdown formatting."
+    ),
+    FACT_EXTRACTOR(
+        "Fact Extractor",
+        "You are an expert researcher. Your goal is to extract concrete, verifiable facts from the provided text. " +
+        "Output the facts as a bulleted list. Do not include opinions or fluff. " +
+        "Format: - [Fact content] (Source: [Source if available])"
     );
 
     private final String roleName;
