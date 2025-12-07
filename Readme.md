@@ -39,17 +39,17 @@ Zbiór niezależnych instancji LLM z unikalnymi osobowościami (Personas):
 
 Architektura APC została zaprojektowana z myślą o łatwym skalowaniu horyzontalnym i wertykalnym, aby sprostać rosnącym wymaganiom MSZ:
 
-### Skalowalność Horyzontalna (Horizontal Scaling)
+### Przyszła Skalowalność Horyzontalna (Horizontal Scaling)
 *   **Mikroserwisy Agentowe:** Każdy agent (np. "The Economist") może być wdrożony jako niezależny mikroserwis w klastrze Kubernetes. Pozwala to na dynamiczne skalowanie liczby instancji agentów w zależności od obciążenia (np. liczby analizowanych dokumentów).
 *   **Równoległe Przetwarzanie:** System wykorzystuje asynchroniczne kolejki wiadomości (np. RabbitMQ, Kafka) do dystrybucji zadań analizy faktów i generowania scenariuszy. Dzięki temu tysiące dokumentów mogą być przetwarzane równolegle przez setki instancji agentów.
 
 ### Skalowalność Wertykalna (Vertical Scaling)
 *   **Zarządzanie Kontekstem (Context Window Management):** System implementuje techniki kompresji kontekstu i selekcji informacji (RAG - Retrieval-Augmented Generation), co pozwala na efektywne wykorzystanie modeli LLM z dużymi oknami kontekstowymi (np. Gemini 1.5 Pro, GPT-4 Turbo) bez utraty wydajności.
-*   **Optymalizacja Bazy Danych:** Wykorzystanie wektorowych baz danych (np. Pinecone, Milvus) umożliwia szybkie wyszukiwanie semantyczne w milionach rekordów, co jest kluczowe dla fazy "Market Maker" przy ekstrakcji faktów z dużych zbiorów danych.
+*   **Optymalizacja Bazy Danych:** Wykorzystanie wektorowej baz danych (Postgres) umożliwia szybkie wyszukiwanie semantyczne w milionach rekordów, co jest kluczowe dla fazy "Market Maker" przy ekstrakcji faktów z dużych zbiorów danych.
 
 ### Modularność i Rozszerzalność
 *   **Plug-and-Play Personas:** Dodanie nowego agenta (np. "Ekspert ds. Cyberbezpieczeństwa") sprowadza się do definicji nowej klasy `Persona` i wstrzyknięcia jej do kontenera DI (Dependency Injection). Nie wymaga to przebudowy całego systemu.
-*   **Abstrakcja LLM:** Warstwa abstrakcji klienta LLM (`LlmClient`) pozwala na łatwą wymianę modeli (np. z OpenAI na lokalne modele open-source jak Llama 3) bez zmian w logice biznesowej.
+*   **Abstrakcja LLM:** Implementacja warstwa abstrakcji klienta LLM (`LlmClient`) z pomocą Spring AI pozwala na łatwą wymianę api modeli (np. z OpenAI na lokalne modele open-source jak Llama 3) bez zmian w logice biznesowej.
 
 ---
 
