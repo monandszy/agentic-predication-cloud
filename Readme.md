@@ -7,7 +7,7 @@ APC to zaawansowany system **Multi-Agent Systems (MAS)**, który symuluje dział
 
 ## 1. Koncepcja Biznesowa: Syntetyczny Rynek Predykcyjny
 
-![System Diagram](.docs/ei6gwr2ha2.png)
+![API Interface](.docs/librewolf_ZZwgrRCa5j.png)
 
 System działa w czterech fazach, symulując proces analityczny w MSZ:
 
@@ -55,7 +55,7 @@ Architektura APC została zaprojektowana z myślą o łatwym skalowaniu horyzont
 
 ## 3. Możliwości API i Użycie (API Capabilities)
 
-![API Interface](.docs/librewolf_ZZwgrRCa5j.png)
+![System Diagram](.docs/ei6gwr2ha2.png)
 
 System udostępnia interfejs REST API udokumentowany w Swagger UI (dostępny pod adresem `http://localhost:8080/swagger-ui.html` po uruchomieniu lokalnym).
 
