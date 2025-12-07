@@ -5,7 +5,9 @@ APC to zaawansowany system **Multi-Agent Systems (MAS)**, który symuluje dział
 
 ---
 
-## 1. Koncepcja Architektoniczna: Syntetyczny Rynek Predykcyjny
+## 1. Koncepcja Biznesowa: Syntetyczny Rynek Predykcyjny
+
+![System Diagram](.docs/ei6gwr2ha2.png)
 
 System działa w czterech fazach, symulując proces analityczny w MSZ:
 
@@ -33,29 +35,27 @@ Zbiór niezależnych instancji LLM z unikalnymi osobowościami (Personas):
 
 ---
 
-## 2. Realizacja Wymagań MSZ
-
-| Wymóg MSZ | Realizacja w Agent Prediction Cloud |
-| :--- | :--- |
-| **Wyjaśnialność (Chain of Thought)** | System prezentuje logikę każdego "zakładu" i syntezę argumentów w raporcie końcowym. |
-| **Data Poisoning (Bonus)** | Agent "The Skeptic" aktywnie obniża wagi informacji z podejrzanych źródeł. |
-| **Wieloczynnikowość** | Konflikt interesów między wyspecjalizowanymi agentami symuluje złożoność geopolityki. |
-| **Skalowalność** | Łatwe dodawanie nowych agentów (np. "German Policy Agent") do puli. |
-
----
-
-## 3. Skalowalność i Rozwój (Scalability)
+## 2. Architektura Skalowalności (Scalability Architecture)
 
 Architektura APC została zaprojektowana z myślą o łatwym skalowaniu horyzontalnym i wertykalnym, aby sprostać rosnącym wymaganiom MSZ:
 
-*   **Modularność Agentów:** Dodanie nowej perspektywy (np. "Ekspert ds. Chin" lub "Analityk Klimatyczny") wymaga jedynie zdefiniowania nowego `Persona` w kodzie. System automatycznie włączy nowego agenta do procesu debaty i głosowania.
-*   **Przetwarzanie Równoległe:** Każdy agent działa niezależnie. W środowisku produkcyjnym (np. Kubernetes), każdy agent może być osobnym mikroserwisem lub wątkiem, co pozwala na równoległą analizę tysięcy dokumentów.
-*   **Obsługa Dużych Danych (Big Data):** Moduł `FactProcessor` może zostać łatwo zintegrowany z wektorowymi bazami danych (np. Pinecone, Milvus) w celu obsługi RAG (Retrieval-Augmented Generation) na zbiorach milionów dokumentów, zamiast prostego przetwarzania tekstu wejściowego.
-*   **Konteneryzacja:** Aplikacja jest gotowa do wdrożenia w kontenerach Docker, co ułatwia zarządzanie zasobami i izolację środowisk (wymóg bezpieczeństwa).
+### Skalowalność Horyzontalna (Horizontal Scaling)
+*   **Mikroserwisy Agentowe:** Każdy agent (np. "The Economist") może być wdrożony jako niezależny mikroserwis w klastrze Kubernetes. Pozwala to na dynamiczne skalowanie liczby instancji agentów w zależności od obciążenia (np. liczby analizowanych dokumentów).
+*   **Równoległe Przetwarzanie:** System wykorzystuje asynchroniczne kolejki wiadomości (np. RabbitMQ, Kafka) do dystrybucji zadań analizy faktów i generowania scenariuszy. Dzięki temu tysiące dokumentów mogą być przetwarzane równolegle przez setki instancji agentów.
+
+### Skalowalność Wertykalna (Vertical Scaling)
+*   **Zarządzanie Kontekstem (Context Window Management):** System implementuje techniki kompresji kontekstu i selekcji informacji (RAG - Retrieval-Augmented Generation), co pozwala na efektywne wykorzystanie modeli LLM z dużymi oknami kontekstowymi (np. Gemini 1.5 Pro, GPT-4 Turbo) bez utraty wydajności.
+*   **Optymalizacja Bazy Danych:** Wykorzystanie wektorowych baz danych (np. Pinecone, Milvus) umożliwia szybkie wyszukiwanie semantyczne w milionach rekordów, co jest kluczowe dla fazy "Market Maker" przy ekstrakcji faktów z dużych zbiorów danych.
+
+### Modularność i Rozszerzalność
+*   **Plug-and-Play Personas:** Dodanie nowego agenta (np. "Ekspert ds. Cyberbezpieczeństwa") sprowadza się do definicji nowej klasy `Persona` i wstrzyknięcia jej do kontenera DI (Dependency Injection). Nie wymaga to przebudowy całego systemu.
+*   **Abstrakcja LLM:** Warstwa abstrakcji klienta LLM (`LlmClient`) pozwala na łatwą wymianę modeli (np. z OpenAI na lokalne modele open-source jak Llama 3) bez zmian w logice biznesowej.
 
 ---
 
-## 4. Możliwości API i Użycie (API Capabilities)
+## 3. Możliwości API i Użycie (API Capabilities)
+
+![API Interface](.docs/librewolf_ZZwgrRCa5j.png)
 
 System udostępnia interfejs REST API udokumentowany w Swagger UI (dostępny pod adresem `http://localhost:8080/swagger-ui.html` po uruchomieniu lokalnym).
 
@@ -89,7 +89,7 @@ Uruchamia symulację rynku predykcyjnego, w której agenci obstawiają binarne p
 
 ---
 
-## 5. Jak Uruchomić (How to Run)
+## 4. Jak Uruchomić (How to Run)
 
 ### Wymagania Wstępne
 *   Java 17+
@@ -98,19 +98,11 @@ Uruchamia symulację rynku predykcyjnego, w której agenci obstawiają binarne p
 
 ### Budowanie i Uruchamianie
 ```bash
-```bash
 # Zbuduj projekt
 ./gradlew build
 
 # Uruchom aplikację
 ./gradlew bootRun
-```
-
-### Testowanie
-```bash
-# Uruchom testy
-./gradlew test
-```
 ```
 
 ### Testowanie

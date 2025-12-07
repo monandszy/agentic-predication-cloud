@@ -44,6 +44,33 @@ public class ScenarioSynthesizer {
         return scenarios;
     }
 
+    public String generateExecutiveSummary(List<String> facts, List<AgentScenario> agentPerspectives, String focus) {
+        StringBuilder factsBuilder = new StringBuilder();
+        for (int i = 0; i < facts.size(); i++) {
+            factsBuilder.append(i + 1).append(". ").append(facts.get(i)).append("\n");
+        }
+        String factsText = factsBuilder.toString();
+
+        StringBuilder agentsText = new StringBuilder();
+        for (AgentScenario as : agentPerspectives) {
+            agentsText.append("--- ").append(as.persona().getRoleName()).append(" ---\n")
+                      .append(as.description()).append("\n\n");
+        }
+
+        String prompt = String.format(
+            "You are an expert strategic analyst for the state of Atlantis.\n" +
+            "Based on the provided Facts and Agent Perspectives, write a concise Executive Summary (max 200 words) of the strategic situation.\n" +
+            "Focus on the most critical threats and opportunities for %s.\n" +
+            "Facts:\n%s\n\n" +
+            "Agent Perspectives:\n%s\n\n" +
+            "IMPORTANT: The output MUST be in POLISH language.\n" +
+            "Do not use any headers like 'Executive Summary'. Just write the summary text.",
+            focus, factsText, agentsText.toString()
+        );
+
+        return llmClient.chat(prompt, Persona.REPORTER, ModelType.SMART);
+    }
+
     private PredictionScenario generateSingleScenario(String timeframe, String variant, String facts, String agentsView, String focus) {
         Persona reporter = Persona.REPORTER;
         
@@ -59,7 +86,7 @@ public class ScenarioSynthesizer {
             "Output Format:\n" +
             "Title: [Scenario Title in Polish]\n" +
             "Description: [Detailed description of the scenario, correlations, and cause-effect links in Polish. Do not use Markdown lists.]\n" +
-            "Recommendations: [Specific decisions to achieve/avoid this scenario in Polish. Do not use Markdown enumeration (1., -). Use 'Rec 1:', 'Rec 2:' etc.]",
+            "Recommendations: [Specific decisions to achieve/avoid this scenario in Polish. Format as a Markdown bulleted list.]",
             timeframe, variant, focus, facts, agentsView
         );
 
@@ -76,16 +103,33 @@ public class ScenarioSynthesizer {
         String normalized = response
                 .replaceAll("(?i)\\*\\*Title:?\\*\\*", "Title:")
                 .replaceAll("(?i)##\\s*Title:?", "Title:")
+                .replaceAll("(?i)\\*\\*Tytuł:?\\*\\*", "Title:")
+                .replaceAll("(?i)##\\s*Tytuł:?", "Title:")
+                .replaceAll("(?i)Tytuł:", "Title:")
                 .replaceAll("(?i)\\*\\*Description:?\\*\\*", "Description:")
                 .replaceAll("(?i)##\\s*Description:?", "Description:")
+                .replaceAll("(?i)\\*\\*Opis:?\\*\\*", "Description:")
+                .replaceAll("(?i)##\\s*Opis:?", "Description:")
+                .replaceAll("(?i)Opis:", "Description:")
                 .replaceAll("(?i)\\*\\*Recommendations:?\\*\\*", "Recommendations:")
-                .replaceAll("(?i)##\\s*Recommendations:?", "Recommendations:");
+                .replaceAll("(?i)##\\s*Recommendations:?", "Recommendations:")
+                .replaceAll("(?i)\\*\\*Rekomendacje:?\\*\\*", "Recommendations:")
+                .replaceAll("(?i)##\\s*Rekomendacje:?", "Recommendations:")
+                .replaceAll("(?i)Rekomendacje:", "Recommendations:")
+                .replaceAll("(?i)\\*\\*Zalecenia:?\\*\\*", "Recommendations:")
+                .replaceAll("(?i)##\\s*Zalecenia:?", "Recommendations:")
+                .replaceAll("(?i)Zalecenia:", "Recommendations:");
 
         // Extract Recommendations first to isolate the top part
         int recIndex = normalized.indexOf("Recommendations:");
         String topPart = normalized;
         if (recIndex != -1) {
             recommendations = normalized.substring(recIndex + "Recommendations:".length()).trim();
+            // Clean up any remaining headers in recommendations
+            recommendations = recommendations
+                    .replaceAll("(?i)^\\s*Zalecenia:?\\s*", "")
+                    .replaceAll("(?i)^\\s*Rekomendacje:?\\s*", "")
+                    .trim();
             topPart = normalized.substring(0, recIndex);
         }
 

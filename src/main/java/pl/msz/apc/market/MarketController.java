@@ -114,21 +114,29 @@ public class MarketController {
 
         // 3. Synthesize Report
         List<PredictionScenario> finalScenarios = scenarioSynthesizer.synthesizeScenarios(facts, agentScenarios, focus);
-        log.info("Synthesized {} final scenarios", finalScenarios.size());
+        String executiveSummary = scenarioSynthesizer.generateExecutiveSummary(facts, agentScenarios, focus);
+        log.info("Synthesized {} final scenarios and executive summary", finalScenarios.size());
 
         // 4. Format Output
-        return formatReport(finalScenarios, facts, focus);
+        return formatReport(finalScenarios, facts, focus, executiveSummary);
     }
 
-    private String formatReport(List<PredictionScenario> scenarios, List<String> facts, String focus) {
+    private String formatReport(List<PredictionScenario> scenarios, List<String> facts, String focus, String executiveSummary) {
         StringBuilder reportContent = new StringBuilder();
         reportContent.append("# FINALNY RAPORT STRATEGICZNY: ").append(focus.toUpperCase()).append("\n\n");
+        
+        reportContent.append("## PODSUMOWANIE WYKONAWCZE\n\n");
+        reportContent.append(executiveSummary).append("\n\n");
+        
+        reportContent.append("## SPIS TREŚCI\n\n");
+        for (PredictionScenario scenario : scenarios) {
+             String header = String.format("SCENARIUSZ: %s - %s", scenario.timeframe(), scenario.variant().toUpperCase());
+             reportContent.append("- **").append(header).append("**: ").append(scenario.title()).append("\n");
+        }
+        reportContent.append("- **Lista Faktów**\n");
+        reportContent.append("\n---\n\n");
 
         for (PredictionScenario scenario : scenarios) {
-            String formattedRecommendations = scenario.recommendations()
-                    .replaceAll("Rec \\d+:", "\n* ") // Convert "Rec 1:" to bullet point
-                    .trim();
-
             reportContent.append(String.format("""
                 ## SCENARIUSZ: %s - %s
                 **TYTUŁ:** %s
@@ -146,7 +154,7 @@ public class MarketController {
                 scenario.variant().toUpperCase(),
                 scenario.title(),
                 scenario.description(),
-                formattedRecommendations
+                scenario.recommendations()
             ));
         }
 
