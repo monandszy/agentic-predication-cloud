@@ -51,9 +51,10 @@ public class DebateService {
                 "Here is what other agents think:\n%s\n\n" +
                 "Based on these arguments, please reconsider your position. You can change your probability or keep it the same. " +
                 "Provide an updated rationale in 1-3 clean paragraphs, addressing why you agree or disagree with others. Do not use markdown formatting.\n" +
+                "IMPORTANT: The output MUST be in POLISH language.\n" +
                 "Format your response exactly as follows:\n" +
                 "Probability: [0.0-1.0]\n" +
-                "Rationale: [Your explanation]",
+                "Rationale: [Your explanation in Polish]",
                 question.getText(),
                 previousBet.getProbability(),
                 previousBet.getRationale(),

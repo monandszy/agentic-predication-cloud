@@ -41,7 +41,8 @@ public class MarketMakerService {
         String prompt = String.format(
                 "Based on the following context about '%s', generate 1 binary (Yes/No) prediction market question. " +
                 "The question must be clear, falsifiable, and time-bound if possible. " +
-                "Return ONLY the question, without numbering or extra text.\n\nContext:\n%s",
+                "Return ONLY the question, without numbering or extra text.\n" +
+                "IMPORTANT: The output MUST be in POLISH language.\n\nContext:\n%s",
                 topic, context
         );
 

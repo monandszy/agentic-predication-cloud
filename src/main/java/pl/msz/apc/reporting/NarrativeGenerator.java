@@ -34,6 +34,7 @@ public class NarrativeGenerator {
                 "Question: %s\n\n" +
                 "Final Consensus Probability: %.2f\n\n" +
                 "Agent Positions:\n%s\n\n" +
+                "IMPORTANT: The output MUST be in POLISH language.\n" +
                 "Write a concise executive summary (max 200 words) explaining the market's conclusion. " +
                 "Highlight the key arguments that led to this consensus and any significant disagreements.",
                 question.getText(),
@@ -62,6 +63,7 @@ public class NarrativeGenerator {
                 "Question: %s\n\n" +
                 "Final Consensus Probability: %.2f\n\n" +
                 "Agent Positions:\n%s\n\n" +
+                "IMPORTANT: The output MUST be in POLISH language.\n" +
                 "Write a single, concise paragraph (max 5 sentences) summarizing the final agent verdict. " +
                 "Focus on the collective conclusion and the primary reason for it. " +
                 "DO NOT repeat the question. DO NOT include any headers or introductory text like 'Final Verdict'. " +

@@ -35,6 +35,7 @@ public class ScenarioGenerationService {
                "Highlight potential risks and opportunities.\n" +
                "You can reference facts by their number (e.g., [Fact 1]).\n" +
                "Do not use Markdown enumeration (like 1., -, *) for lists. Use plain text formatting.\n\n" +
+               "IMPORTANT: The output MUST be in POLISH language.\n\n" +
                "Facts:\n" + facts + "\n\n" +
                "Scenario Description:";
     }

@@ -97,14 +97,23 @@ public class ScenarioController {
         reportContent.append("# FINAL STRATEGIC REPORT: ").append(focus.toUpperCase()).append("\n\n");
 
         for (PredictionScenario scenario : scenarios) {
+            String formattedRecommendations = scenario.recommendations()
+                    .replaceAll("Rec \\d+:", "\n* ") // Convert "Rec 1:" to bullet point
+                    .trim();
+            if (formattedRecommendations.startsWith("*")) {
+                 // Ensure the first item is on a new line if it wasn't already
+            } else {
+                 // If it didn't start with Rec 1, just leave it or maybe add a bullet if it's a single block
+            }
+
             reportContent.append(String.format("""
-                ## SCENARIO: %s - %s
-                **TITLE:** %s
+                ## SCENARIUSZ: %s - %s
+                **TYTUŁ:** %s
                 
-                ### Description
+                ### Opis
                 %s
                 
-                ### Recommendations
+                ### Rekomendacje
                 %s
                 
                 ---
@@ -114,13 +123,13 @@ public class ScenarioController {
                 scenario.variant().toUpperCase(),
                 scenario.title(),
                 scenario.description(),
-                scenario.recommendations()
+                formattedRecommendations
             ));
         }
 
-        reportContent.append("\n## List of Facts\n");
-        for (String fact : facts) {
-            reportContent.append(fact).append("\n");
+        reportContent.append("\n## Lista Faktów\n");
+        for (int i = 0; i < facts.size(); i++) {
+            reportContent.append(i + 1).append(". ").append(facts.get(i)).append("\n");
         }
         
         return reportContent.toString();

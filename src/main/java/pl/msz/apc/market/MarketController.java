@@ -122,17 +122,21 @@ public class MarketController {
 
     private String formatReport(List<PredictionScenario> scenarios, List<String> facts, String focus) {
         StringBuilder reportContent = new StringBuilder();
-        reportContent.append("# FINAL STRATEGIC REPORT: ").append(focus.toUpperCase()).append("\n\n");
+        reportContent.append("# FINALNY RAPORT STRATEGICZNY: ").append(focus.toUpperCase()).append("\n\n");
 
         for (PredictionScenario scenario : scenarios) {
+            String formattedRecommendations = scenario.recommendations()
+                    .replaceAll("Rec \\d+:", "\n* ") // Convert "Rec 1:" to bullet point
+                    .trim();
+
             reportContent.append(String.format("""
-                ## SCENARIO: %s - %s
-                **TITLE:** %s
+                ## SCENARIUSZ: %s - %s
+                **TYTUŁ:** %s
                 
-                ### Description
+                ### Opis
                 %s
                 
-                ### Recommendations
+                ### Rekomendacje
                 %s
                 
                 ---
@@ -142,13 +146,13 @@ public class MarketController {
                 scenario.variant().toUpperCase(),
                 scenario.title(),
                 scenario.description(),
-                scenario.recommendations()
+                formattedRecommendations
             ));
         }
 
-        reportContent.append("\n## List of Facts\n");
-        for (String fact : facts) {
-            reportContent.append(fact).append("\n");
+        reportContent.append("\n## Lista Faktów\n");
+        for (int i = 0; i < facts.size(); i++) {
+            reportContent.append(i + 1).append(". ").append(facts.get(i)).append("\n");
         }
         
         return reportContent.toString();

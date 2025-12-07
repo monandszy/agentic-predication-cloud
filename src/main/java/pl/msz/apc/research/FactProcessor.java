@@ -25,8 +25,9 @@ public class FactProcessor {
             combinedData = combinedData.substring(0, 20000) + "...(truncated)";
         }
 
-        String prompt = "Extract key facts from the following text. " +
-                        "If a fact has an importance weight (e.g., 'waga istotności: 30'), include it in brackets at the end.\n\n" + combinedData;
+        String prompt = "Extract key facts from the following text as a bulleted list. " +
+                        "If a fact has an importance weight (e.g., 'waga istotności: 30'), include it in brackets at the end.\n" +
+                        "IMPORTANT: The output MUST be in POLISH language.\n\n" + combinedData;
         
         String response = llmClient.chat(prompt, Persona.FACT_EXTRACTOR, ModelType.SMART);
         System.out.println("DEBUG: Fact Extractor Response: " + response);
