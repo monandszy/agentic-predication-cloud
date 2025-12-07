@@ -20,7 +20,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@ActiveProfiles({"test", "mock"})
+@ActiveProfiles("test")
 class NarrativeGeneratorTest {
 
     @Autowired

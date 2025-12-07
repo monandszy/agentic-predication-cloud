@@ -20,8 +20,8 @@ public class ScenarioSynthesizer {
 
     private final LlmClient llmClient;
 
-    public List<PredictionScenario> synthesizeScenarios(List<String> facts, List<AgentScenario> agentPerspectives) {
-        log.info("Synthesizing final scenarios from {} facts and {} agent perspectives...", facts.size(), agentPerspectives.size());
+    public List<PredictionScenario> synthesizeScenarios(List<String> facts, List<AgentScenario> agentPerspectives, String focus) {
+        log.info("Synthesizing final scenarios from {} facts and {} agent perspectives with focus: {}", facts.size(), agentPerspectives.size(), focus);
 
         String factsText = String.join("\n", facts);
         StringBuilder agentsText = new StringBuilder();
@@ -31,22 +31,22 @@ public class ScenarioSynthesizer {
         }
 
         List<PredictionScenario> scenarios = new ArrayList<>();
-        scenarios.add(generateSingleScenario("12 months", "Positive", factsText, agentsText.toString()));
-        scenarios.add(generateSingleScenario("12 months", "Negative", factsText, agentsText.toString()));
-        scenarios.add(generateSingleScenario("36 months", "Positive", factsText, agentsText.toString()));
-        scenarios.add(generateSingleScenario("36 months", "Negative", factsText, agentsText.toString()));
+        scenarios.add(generateSingleScenario("12 months", "Positive", factsText, agentsText.toString(), focus));
+        scenarios.add(generateSingleScenario("12 months", "Negative", factsText, agentsText.toString(), focus));
+        scenarios.add(generateSingleScenario("36 months", "Positive", factsText, agentsText.toString(), focus));
+        scenarios.add(generateSingleScenario("36 months", "Negative", factsText, agentsText.toString(), focus));
 
         return scenarios;
     }
 
-    private PredictionScenario generateSingleScenario(String timeframe, String variant, String facts, String agentsView) {
+    private PredictionScenario generateSingleScenario(String timeframe, String variant, String facts, String agentsView, String focus) {
         Persona reporter = Persona.REPORTER;
         
         String prompt = String.format(
             "You are an expert strategic analyst for the state of Atlantis.\n" +
             "Based on the provided Facts and Agent Perspectives, generate a detailed future scenario.\n" +
             "Timeframe: %s\n" +
-            "Variant: %s (for Atlantis interests)\n" +
+            "Variant: %s (for %s)\n" +
             "You can reference facts by their number (e.g., [Fact 1]).\n\n" +
             "Facts:\n%s\n\n" +
             "Agent Perspectives:\n%s\n\n" +
@@ -54,7 +54,7 @@ public class ScenarioSynthesizer {
             "Title: [Scenario Title]\n" +
             "Description: [Detailed description of the scenario, correlations, and cause-effect links. Do not use Markdown lists.]\n" +
             "Recommendations: [Specific decisions to achieve/avoid this scenario. Do not use Markdown enumeration (1., -). Use 'Rec 1:', 'Rec 2:' etc.]",
-            timeframe, variant, facts, agentsView
+            timeframe, variant, focus, facts, agentsView
         );
 
         String response = llmClient.chat(prompt, reporter, ModelType.SMART);

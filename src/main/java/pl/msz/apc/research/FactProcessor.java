@@ -29,12 +29,14 @@ public class FactProcessor {
                         "If a fact has an importance weight (e.g., 'waga istotności: 30'), include it in brackets at the end.\n\n" + combinedData;
         
         String response = llmClient.chat(prompt, Persona.FACT_EXTRACTOR, ModelType.SMART);
+        System.out.println("DEBUG: Fact Extractor Response: " + response);
         
         // Parse the response into a list
         List<String> facts = new ArrayList<>();
         for (String line : response.split("\n")) {
-            if (line.trim().startsWith("-")) {
-                facts.add(line.trim().substring(1).trim());
+            String trimmed = line.trim();
+            if (trimmed.startsWith("-") || trimmed.startsWith("*")) {
+                facts.add(trimmed.substring(1).trim());
             }
         }
         

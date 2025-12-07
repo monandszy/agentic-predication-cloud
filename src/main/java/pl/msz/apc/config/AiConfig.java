@@ -24,7 +24,7 @@ public class AiConfig {
 
     @Bean
     @Primary
-    @ConditionalOnProperty(name = "spring.ai.openai.base-url", havingValue = "https://generativelanguage.googleapis.com/v1beta/openai/")
+    @ConditionalOnProperty(name = "spring.ai.openai.base-url", havingValue = "https://generativelanguage.googleapis.com/v1beta/openai")
     public EmbeddingModel geminiEmbeddingModel(OpenAiApi openAiApi) {
         return new GeminiEmbeddingModel(openAiApi);
     }

@@ -24,14 +24,18 @@ public class MarketMakerService {
 
     @Transactional
     public Market createMarket(String topic) {
-        log.info("Creating market for topic: {}", topic);
-
         // 1. Retrieve context
         String context = retrievalService.retrieveContext(topic);
         if (context == null || context.isEmpty()) {
             log.warn("No context found for topic: {}", topic);
             context = "No specific context available. Rely on general knowledge.";
         }
+        return createMarket(topic, context);
+    }
+
+    @Transactional
+    public Market createMarket(String topic, String context) {
+        log.info("Creating market for topic: {}", topic);
 
         // 2. Generate Questions using LLM
         String prompt = String.format(

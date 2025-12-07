@@ -62,7 +62,7 @@ class AtlantisScenarioTest {
 
         // 4. Report Synthesis
         System.out.println("\n--- Synthesizing Final Report (Atlantis Interests) ---");
-        List<pl.msz.apc.reporting.PredictionScenario> finalScenarios = scenarioSynthesizer.synthesizeScenarios(facts, agentScenarios);
+        List<pl.msz.apc.reporting.PredictionScenario> finalScenarios = scenarioSynthesizer.synthesizeScenarios(facts, agentScenarios, "Atlantis interests");
 
         System.out.println("\n==========================================");
         System.out.println("FINAL STRATEGIC REPORT: ATLANTIS INTERESTS");

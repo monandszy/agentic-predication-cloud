@@ -6,8 +6,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum ModelType {
-    FAST("gemini-2.0-flash-lite"),
-    SMART("gemini-2.0-flash");
+    FAST("gemini-2.5-flash-lite"),
+    // SMART("gemini-2.0-flash");
+    SMART("gemini-2.5-flash-lite");
 
     private final String modelName;
 }

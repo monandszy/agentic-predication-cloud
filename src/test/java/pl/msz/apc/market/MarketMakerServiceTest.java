@@ -13,7 +13,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@ActiveProfiles({"test", "mock"})
+@ActiveProfiles("test")
 class MarketMakerServiceTest {
 
     @Autowired

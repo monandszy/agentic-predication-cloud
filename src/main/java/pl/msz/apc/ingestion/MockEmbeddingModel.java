@@ -37,10 +37,10 @@ public class MockEmbeddingModel implements EmbeddingModel {
     }
     
     public int dimensions() {
-        return 1536;
+        return 768;
     }
 
     private List<Double> generateDummyVector() {
-        return new ArrayList<>(Collections.nCopies(1536, 0.0d));
+        return new ArrayList<>(Collections.nCopies(768, 0.0d));
     }
 }

@@ -232,7 +232,7 @@ maksymalnie 3 minuty i prezentujący projekt (działanie narzędzia od
 momentu określenia danych wejściowych po uzyskanie tekstu zgodnego z
 opisem w punkcie 3).
 •
- Opis architektury rozwiązania
+ Opis architektury rozwiązanian
 •
  Tekst zgodny z opisem w punkcie 3
 •

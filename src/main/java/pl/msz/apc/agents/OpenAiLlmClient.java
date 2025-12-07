@@ -42,8 +42,8 @@ public class OpenAiLlmClient implements LlmClient {
         while (attempt < maxRetries) {
             try {
                 // Rate limiting delay
-                log.info("Waiting 2s before calling LLM API to avoid rate limits...");
-                Thread.sleep(2000);
+                log.info("Waiting 10s before calling LLM API to avoid rate limits...");
+                Thread.sleep(10000);
 
                 log.info("Sending message to LLM as {} using model {}: {}", persona.getRoleName(), modelType, message);
 
@@ -61,6 +61,10 @@ public class OpenAiLlmClient implements LlmClient {
                                 .build())
                         .call()
                         .content();
+
+                if (response == null) {
+                    throw new RuntimeException("Received null response from LLM");
+                }
 
                 log.info("Received response from LLM: {}", response);
                 llmCacheService.cacheResponse(fullPrompt, modelName, response);
